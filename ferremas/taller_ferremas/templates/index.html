@@ -34,6 +34,9 @@
         </div>
     </nav>
 
+    <div class="container mt-5"   id="productos-container">
+    </div>
+
     <h2>Bienvenido a Ferremas</h2>
     <p>Tu ferretería de confianza para herramientas y materiales de construcción.</p>
     <button>Ver catálogo</button>
@@ -44,8 +47,10 @@
 <footer>
 </footer>
 <!-- JavaScript Bootstrap-->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-..." crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js" integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO" crossorigin="anonymous"></script>
 <!-- JavaScript de la API-->
 <script src="{% static 'js/api.js' %}"></script>
+<!-- JavaScript de mostrar productos-->
+<script type="module" src="{% static 'JS/mostrar_producto.js'%}"></script>
 </body>
 </html>
