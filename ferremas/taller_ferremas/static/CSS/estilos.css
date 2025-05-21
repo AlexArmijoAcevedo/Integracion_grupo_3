@@ -1,0 +1,25 @@
+.amarillo {
+    color:rgb(248, 179, 28);
+}
+
+.bg_azul {
+    background-color:rgb(0, 33, 56);
+}
+
+.api_clima {
+    padding-right: 5px; 
+    font-size: medium;
+}
+
+.amarillo_oscuro {
+    color:rgb(244, 198, 100)
+
+}
+
+.amarillo_links {
+    color:rgb(248, 179, 28);
+}
+
+.amarillo_links:hover {
+    color:rgb(160, 117, 23);
+}

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Agregar Producto</title>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-app.js";
+    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyC6oBATkiU7X2FMd8_FZrBJ6phFe5Too-I",
+      authDomain: "ferremas-cb091.firebaseapp.com",
+      projectId: "ferremas-cb091",
+      storageBucket: "ferremas-cb091.appspot.com",
+      messagingSenderId: "946559441320",
+      appId: "1:946559441320:web:b2b5b6af992b701a28e59d"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const form = document.getElementById("form-producto");
+
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const nombre = form.nombre.value;
+        const descripcion = form.descripcion.value;
+        const precio = parseFloat(form.precio.value);
+
+        try {
+          await addDoc(collection(db, "productos"), {
+            nombre,
+            descripcion,
+            precio
+          });
+          alert("Producto agregado correctamente");
+          form.reset();
+        } catch (error) {
+          alert("Error al agregar producto: " + error.message);
+        }
+      });
+    });
+  </script>
+</head>
+<body>
+  <h1>Agregar producto</h1>
+  <form id="form-producto">
+    <label>Nombre:</label><br>
+    <input type="text" name="nombre" required><br><br>
+    
+    <label>Descripción:</label><br>
+    <textarea name="descripcion" required></textarea><br><br>
+    
+    <label>Precio:</label><br>
+    <input type="number" name="precio" step="0.01" required><br><br>
+    
+    <button type="submit">Agregar producto</button>
+  </form>
+</body>
+</html>
