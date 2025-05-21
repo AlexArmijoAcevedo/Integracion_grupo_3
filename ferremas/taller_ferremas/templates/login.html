@@ -1,0 +1,132 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Sign Up | Log In</title>
+    <link rel="stylesheet" href="{% static 'css/estilo_login.css' %}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  </head>
+  <body>
+   <!--<img src="{% static 'IMG/login_bg.png' %}">-->
+    <div class="wrapper">
+       <div class="title-text">
+          <div class="title login">
+             Iniciar Sesión
+          </div>
+          <div class="title signup">
+             Registrarse
+          </div>
+       </div>
+       <div class="form-container">
+          <div class="slide-controls">
+             <input type="radio" name="slide" id="login" checked>
+             <input type="radio" name="slide" id="signup">
+             <label for="login" class="slide login">Iniciar sesión</label>
+             <label for="signup" class="slide signup">Registrarse</label>
+             <div class="slider-tab"></div>
+          </div>
+          <div class="form-inner">
+             <form action="#" class="login">
+                <div class="field">
+                   <input type="email" placeholder="Correo electronico" required>
+                </div>
+                <div class="field">
+                   <input type="password" placeholder="Contraseña" required>
+                </div>
+                <div class="pass-link">
+                   <a href="#">Olvido su contraseña?</a>
+                </div>
+                <div class="field btn">
+                   <div class="btn-layer"></div>
+                   <input type="submit" value="Login">
+                </div>
+                <div class="signup-link">
+                   No tiene cuenta? <a href="">Crear una nueva</a>
+                </div>
+             </form>
+             <form action="#" class="signup">
+                <div class="field">
+                   <input type="email" placeholder="Correo electronico" required>
+                </div>
+                <div class="field">
+                   <input type="password" placeholder="Contraseña" required>
+                </div>
+                <div class="field">
+                   <input type="password" placeholder="Confirmar Contraseña" required>
+                </div>
+                <div class="field btn">
+                   <div class="btn-layer"></div>
+                   <input type="submit" value="SignUp">
+                </div>
+             </form>
+          </div>
+       </div>
+    </div>
+    <script src="{% static 'js/estilo_login.js' %}"></script>
+
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-app.js";
+      import { getAuth, createUserWithEmailAndPassword,signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.7.3/firebase-auth.js";
+      
+    
+      const firebaseConfig = {
+        apiKey: "AIzaSyC6oBATkiU7X2FMd8_FZrBJ6phFe5Too-I",
+        authDomain: "ferremas-cb091.firebaseapp.com",
+        projectId: "ferremas-cb091",
+        storageBucket: "ferremas-cb091.firebasestorage.app",
+        messagingSenderId: "946559441320",
+        appId: "1:946559441320:web:b2b5b6af992b701a28e59d",
+        measurementId: "G-LJ6RRJV01P"
+      };
+    
+      const app = initializeApp(firebaseConfig);
+      const auth = getAuth(app);
+    
+      document.addEventListener("DOMContentLoaded", () => {
+        const signupForm = document.querySelector("form.signup");
+        if (signupForm) {
+         signupForm.addEventListener("submit", (e) => {
+            e.preventDefault();
+            const email = signupForm.querySelector("input[type='email']").value;
+            const password = signupForm.querySelector("input[type='password']").value;
+            const confirmPassword = signupForm.querySelector("input[placeholder='Confirmar Contraseña']").value;
+
+            if (password !== confirmPassword) {
+               alert("Las contraseñas no coinciden");
+               return; 
+            }
+    
+            createUserWithEmailAndPassword(auth, email, password)
+              .then((userCredential) => {
+                alert("Usuario registrado correctamente");
+                console.log(userCredential.user);
+              })
+              .catch((error) => {
+                alert("Error: " + error.message);
+              });
+         
+         });
+        }
+
+    // Login
+    const loginForm = document.querySelector("form.login");
+    if (loginForm) {
+      loginForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const email = loginForm.querySelector("input[type='email']").value;
+        const password = loginForm.querySelector("input[type='password']").value;
+
+        signInWithEmailAndPassword(auth, email, password)
+          .then((userCredential) => {
+            alert("Inicio de sesión exitoso");
+            console.log(userCredential.user);
+            window.location.href = "index"; 
+          })
+          .catch((error) => {
+            alert("Error al iniciar sesión: " + error.message);
+          });
+      });
+    }
+  });
+</script>
