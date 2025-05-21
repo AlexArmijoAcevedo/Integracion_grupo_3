@@ -10,8 +10,11 @@ document.addEventListener("DOMContentLoaded", () => {
 function mostrarCarrito() {
   const carritoContainer = document.getElementById("carrito-container");
   const totalSpan = document.getElementById("total");
+  
 
   let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+
+  console.log("Carrito cargado:", carrito);
 
   // Agrupar productos por ID
   const productosAgrupados = {};
@@ -19,7 +22,7 @@ function mostrarCarrito() {
     if (productosAgrupados[producto.id]) {
       productosAgrupados[producto.id].cantidad += 1;
     } else {
-      productosAgrupados[producto.id] = { ...producto };
+      productosAgrupados[producto.id] = { ...producto, cantidad: 1 };
     }
   });
 
@@ -37,14 +40,14 @@ function mostrarCarrito() {
       <td>$${producto.precio}</td>
       <td>
         <div class="d-flex align-items-center justify-content-center">
-          <button class="btn btn-sm btn-outline-secondary me-1" onclick="actualizarCantidad(${producto.id}, -1)">−</button>
+          <button class="btn btn-sm btn-outline-secondary me-1 btn-disminuir" data-id="${producto.id}">−</button>
           <span id="cantidad-${producto.id}" class="px-2">${producto.cantidad}</span>
-          <button class="btn btn-sm btn-outline-secondary ms-1" onclick="actualizarCantidad(${producto.id}, 1)">+</button>
+          <button class="btn btn-sm btn-outline-secondary ms-1 btn-aumentar" data-id="${producto.id}">+</button>
         </div>
       </td>
       <td id="subtotal-${producto.id}">$${subtotal}</td>
       <td>
-        <button class="btn btn-danger btn-sm" onclick="eliminarProducto(${producto.id})">Eliminar</button>
+        <button class="btn btn-danger btn-sm btn-eliminar" data-id="${producto.id}">Eliminar</button>
       </td>
     `;
 
@@ -52,46 +55,59 @@ function mostrarCarrito() {
   });
 
   totalSpan.textContent = `$${total}`;
+
+  // Asignar eventos a botones
+  document.querySelectorAll(".btn-disminuir").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const id = parseInt(btn.dataset.id);
+      actualizarCantidad(id, -1);
+    });
+  });
+
+  document.querySelectorAll(".btn-aumentar").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const id = parseInt(btn.dataset.id);
+      actualizarCantidad(id, 1);
+    });
+  });
+
+  document.querySelectorAll(".btn-eliminar").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const id = parseInt(btn.dataset.id);
+      eliminarProducto(id);
+    });
+  });
 }
 
-// Aumentar o disminuir cantidad
-window.actualizarCantidad = function (id, cambio) {
+function actualizarCantidad(id, cambio) {
   let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
 
-  const index = carrito.findIndex(p => p.id === id);
-  if (index === -1) return;
-
-  // Agrupar productos iguales
-  let productosFiltrados = carrito.filter(p => p.id === id);
+  const productosFiltrados = carrito.filter(p => p.id === id);
   let cantidadActual = productosFiltrados.length;
 
-  if (cambio === -1 && cantidadActual <= 1) {
-    carrito = carrito.filter(p => p.id !== id);
-  } else if (cambio === -1) {
-    let encontrado = false;
-    carrito = carrito.filter(p => {
-      if (!encontrado && p.id === id) {
-        encontrado = true;
-        return false; // elimina uno
-      }
-      return true;
-    });
+  if (cambio === -1) {
+    if (cantidadActual > 1) {
+      let encontrado = false;
+      carrito = carrito.filter(p => {
+        if (!encontrado && p.id === id) {
+          encontrado = true; 
+          return false; // elimina uno
+        }
+        return true;
+      });
+    }
+    // Si es 1 o menos no hace nada para no bajar de 1
   } else if (cambio === 1) {
-    carrito.push(productosFiltrados[0]); // añade otro igual
+    carrito.push(productosFiltrados[0]);
   }
 
   localStorage.setItem("carrito", JSON.stringify(carrito));
   mostrarCarrito();
-};
+}
 
-// Eliminar todos los productos de ese tipo por nombre
-window.eliminarProducto = function (nombre) {
+function eliminarProducto(id) {
   let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
-
-  // Elimina todos los productos con ese nombre
-  carrito = carrito.filter(p => p.nombre !== nombre);
-
+  carrito = carrito.filter(p => p.id !== id);
   localStorage.setItem("carrito", JSON.stringify(carrito));
   mostrarCarrito();
-};
-
+}

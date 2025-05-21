@@ -12,6 +12,8 @@ def login(request):
     return render(request, 'login.html')
 def agregar_producto(request):
     return render(request, 'agregar_producto.html')
+def carrito (request):
+    return render(request, 'carrito.html')
 
 def registrar_pedido(request):
     if request.method == 'POST':
@@ -19,3 +21,4 @@ def registrar_pedido(request):
         # uid_usuario, productos, direccion, total
         Pedido.objects.create(**data)
         return JsonResponse({'ok': True})
+

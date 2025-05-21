@@ -15,7 +15,7 @@ const firebaseConfig = {
 
 // Inicializa Firebase
 const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+const db = getFirestore(app);  
 const auth = getAuth(app);
 
 // Función para mostrar productos
@@ -26,46 +26,46 @@ async function cargarProductos() {
     const querySnapshot = await getDocs(collection(db, "productos"));
     
     querySnapshot.forEach((doc) => {
-      const producto = doc.data();
-      const card = `
-        <div class="col-md-4">
-          <div class="card mb-4 shadow-sm">
-            <img src="..." class="card-img" alt="Product Image" style="height: 200px; object-fit: cover;">
-            <div class="card-body">
-              <h5 class="card-title">${producto.nombre}</h5>
-              <p class="card-text">${producto.descripcion}</p>
-              <div class= "d-flex justify-content-between align-item-center">
-                <span class="card-price" style="font-size: 1.2rem; font-weight: 700; color:  rgb(0, 33, 56);;">$${producto.precio}</span>
-              </div>
-              <div class="card-btn-container">
-              <button class="btn btn-primary agregar-carrito" 
-                        data-nombre="${producto.nombre}" 
-                        data-precio="${producto.precio}">
-                  Agregar al carrito
-                </button>
-              </div>
+    const producto = doc.data();
+
+
+    const card = `
+      <div class="col-md-4">
+        <div class="card mb-4 shadow-sm">
+          <img src="/static/IMG/${producto.Imagen}" class="card-img" alt="Imagen del producto" style="height: 200px; object-fit: cover;">
+          <div class="card-body">
+            <h5 class="card-title">${producto.nombre}</h5>
+            <p class="card-text">${producto.categoria} - ${producto.marca}</p>
+            <div class="d-flex justify-content-between align-items-center">
+              <span class="card-price" style="font-size: 1.2rem; font-weight: 700; color: rgb(0, 33, 56);">
+                $${producto.valor}
+              </span>
+            </div>
+            <div class="card-btn-container mt-3 d-flex justify-content-around">
+              <button 
+                class="btn btn-outline-primary ver-detalle" 
+                data-id="${doc.id}" 
+                data-nombre="${producto.nombre}" 
+                data-marca="${producto.marca}"
+                data-valor="${producto.valor}"
+                data-categoria="${producto.categoria}">
+                Ver más
+              </button>
+              <button 
+                class="btn btn-success agregar-carrito"
+                data-id="${doc.id}"
+                data-nombre="${producto.nombre}" 
+                data-precio="${producto.valor}">
+                <i class="bi bi-cart-plus"></i> Agregar
+              </button>
             </div>
           </div>
         </div>
-      `;
+      </div>
+    `;
 
-      contenedor.innerHTML += card;
+      document.getElementById('productos-container').innerHTML += card;
     });
-
-     setTimeout(() => {
-      const botones = document.querySelectorAll(".agregar-carrito");
-      botones.forEach(btn => {
-        btn.addEventListener("click", () => {
-          const id = btn.getAttribute("data-id");
-          const nombre = btn.getAttribute("data-nombre");
-          const precio = parseFloat(btn.getAttribute("data-precio"));
-          const carrito = JSON.parse(localStorage.getItem("carrito")) || [];
-          carrito.push({ id, nombre, precio });
-          localStorage.setItem("carrito", JSON.stringify(carrito));
-          alert("Producto agregado al carrito");
-        });
-      });
-    }, 500); 
     
   } catch (error) {
     console.error("Error al cargar productos:", error);
@@ -73,21 +73,18 @@ async function cargarProductos() {
   }
 }
 
-// Listener de autenticación
 onAuthStateChanged(auth, (user) => {
   if (user) {
     console.log("Usuario autenticado:", user.email);
     cargarProductos();
   } else {
     console.log("Usuario no autenticado");
-    // Redirige al login si no está en la página de login
     if (!window.location.pathname.includes("login.html")) {
       window.location.href = "/login.html";
     }
   }
 });
 
-// Login (si tienes formulario)
 const form = document.getElementById("login-form");
 if (form) {
   form.addEventListener("submit", async (e) => {
@@ -105,3 +102,48 @@ if (form) {
     }
   });
 }
+
+document.addEventListener('click', function (e) {
+  if (e.target.classList.contains('ver-detalle')) {
+    const nombre = e.target.dataset.nombre;
+    const marca = e.target.dataset.marca;
+    const valor = e.target.dataset.valor;
+    const categoria = e.target.dataset.categoria;
+
+    const contenido = `
+      <p><strong>Nombre:</strong> ${nombre}</p>
+      <p><strong>Marca:</strong> ${marca}</p>
+      <p><strong>Precio:</strong> $${valor}</p>
+      <p><strong>Categoría:</strong> ${categoria}</p>
+    `;
+
+    document.getElementById('detalleContenido').innerHTML = contenido;
+    const modal = new bootstrap.Modal(document.getElementById('detalleModal'));
+    modal.show();
+  }
+});
+
+document.addEventListener('click', (e) => {
+  if (e.target.classList.contains('agregar-carrito')) {
+    const btn = e.target;
+    const producto = {
+      id: btn.dataset.id,
+      nombre: btn.dataset.nombre,
+      precio: parseFloat(btn.dataset.precio),
+      cantidad: 1
+    };
+
+    let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
+
+    // Verificar si ya existe en el carrito
+    const index = carrito.findIndex(item => item.id === producto.id);
+    if (index !== -1) {
+      carrito[index].cantidad += 1;
+    } else {
+      carrito.push(producto);
+    }
+
+    localStorage.setItem('carrito', JSON.stringify(carrito));
+    alert(`${producto.nombre} agregado al carrito`);
+  }
+});
