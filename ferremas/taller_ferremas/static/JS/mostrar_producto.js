@@ -24,22 +24,49 @@ async function cargarProductos() {
 
   try {
     const querySnapshot = await getDocs(collection(db, "productos"));
+    
     querySnapshot.forEach((doc) => {
       const producto = doc.data();
       const card = `
         <div class="col-md-4">
           <div class="card mb-4 shadow-sm">
+            <img src="..." class="card-img" alt="Product Image" style="height: 200px; object-fit: cover;">
             <div class="card-body">
               <h5 class="card-title">${producto.nombre}</h5>
               <p class="card-text">${producto.descripcion}</p>
-              <p class="card-text"><strong>Precio:</strong> $${producto.precio}</p>
-              <a href="#" class="btn btn-primary">Agregar al carrito</a>
+              <div class= "d-flex justify-content-between align-item-center">
+                <span class="card-price" style="font-size: 1.2rem; font-weight: 700; color:  rgb(0, 33, 56);;">$${producto.precio}</span>
+              </div>
+              <div class="card-btn-container">
+              <button class="btn btn-primary agregar-carrito" 
+                        data-nombre="${producto.nombre}" 
+                        data-precio="${producto.precio}">
+                  Agregar al carrito
+                </button>
+              </div>
             </div>
           </div>
         </div>
       `;
+
       contenedor.innerHTML += card;
     });
+
+     setTimeout(() => {
+      const botones = document.querySelectorAll(".agregar-carrito");
+      botones.forEach(btn => {
+        btn.addEventListener("click", () => {
+          const id = btn.getAttribute("data-id");
+          const nombre = btn.getAttribute("data-nombre");
+          const precio = parseFloat(btn.getAttribute("data-precio"));
+          const carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+          carrito.push({ id, nombre, precio });
+          localStorage.setItem("carrito", JSON.stringify(carrito));
+          alert("Producto agregado al carrito");
+        });
+      });
+    }, 500); 
+    
   } catch (error) {
     console.error("Error al cargar productos:", error);
     contenedor.innerHTML = "<p>Error al cargar los productos.</p>";
