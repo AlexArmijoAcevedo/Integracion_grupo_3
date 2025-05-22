@@ -6,4 +6,6 @@ urlpatterns = [
     path('index', views.index, name='index'),
     path('agregar/', views.agregar_producto, name='agregar_producto'),
     path('carrito', views.carrito, name='carrito'),
+        path('about_us', views.about_us, name='about_us'),
+    path('api/dolar/', views.obtener_dolar, name='obtener_dolar'),
 ]
