@@ -59,21 +59,29 @@ function mostrarCarrito() {
   // Asignar eventos a botones
   document.querySelectorAll(".btn-disminuir").forEach(btn => {
     btn.addEventListener("click", () => {
-      const id = parseInt(btn.dataset.id);
+      const id = btn.dataset.id;
+      if (!id || typeof id !== "string") {
+        console.error("ID inválido al aumentar:", id);
+        return;
+      }
       actualizarCantidad(id, -1);
     });
   });
 
   document.querySelectorAll(".btn-aumentar").forEach(btn => {
     btn.addEventListener("click", () => {
-      const id = parseInt(btn.dataset.id);
+      const id = btn.dataset.id;
+      if (!id || typeof id !== "string") {
+        console.error("ID inválido al aumentar:", id);
+        return;
+      }
       actualizarCantidad(id, 1);
     });
   });
 
   document.querySelectorAll(".btn-eliminar").forEach(btn => {
     btn.addEventListener("click", () => {
-      const id = parseInt(btn.dataset.id);
+      const id = btn.dataset.id;
       eliminarProducto(id);
     });
   });
@@ -90,15 +98,18 @@ function actualizarCantidad(id, cambio) {
       let encontrado = false;
       carrito = carrito.filter(p => {
         if (!encontrado && p.id === id) {
-          encontrado = true; 
-          return false; // elimina uno
+          encontrado = true;
+          return false;
         }
         return true;
       });
     }
-    // Si es 1 o menos no hace nada para no bajar de 1
   } else if (cambio === 1) {
-    carrito.push(productosFiltrados[0]);
+    if (productosFiltrados.length > 0) {
+      carrito.push(productosFiltrados[0]);
+    } else {
+      console.warn(`No se encontró producto con id ${id} para aumentar cantidad`);
+    }
   }
 
   localStorage.setItem("carrito", JSON.stringify(carrito));

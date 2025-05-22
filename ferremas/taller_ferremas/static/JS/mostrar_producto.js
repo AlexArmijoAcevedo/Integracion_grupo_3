@@ -44,7 +44,7 @@ async function cargarProductos() {
             <div class="card-btn-container mt-3 d-flex justify-content-around">
               <button 
                 class="btn btn-outline-primary ver-detalle" 
-                data-id="${doc.id}" 
+                data-id="${producto.id_producto}" 
                 data-nombre="${producto.nombre}" 
                 data-marca="${producto.marca}"
                 data-valor="${producto.valor}"
@@ -53,7 +53,7 @@ async function cargarProductos() {
               </button>
               <button 
                 class="btn btn-success agregar-carrito"
-                data-id="${doc.id}"
+                data-id="${producto.id_producto}"
                 data-nombre="${producto.nombre}" 
                 data-precio="${producto.valor}">
                 <i class="bi bi-cart-plus"></i> Agregar
