@@ -8,7 +8,7 @@ app = Flask(__name__)
 CORS(app)
 
 # Conexión con Firestore
-cred = credentials.Certificate("../ferremas-cb091-firebase-adminsdk-fbsvc-2b7a7a33a6.json")
+cred = credentials.Certificate("../ferremas-cb091-firebase-adminsdk-fbsvc-f48d4e18b3.json")
 firebase_admin.initialize_app(cred)
 db = firestore.client()
 
