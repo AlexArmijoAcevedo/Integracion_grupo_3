@@ -2,12 +2,13 @@ from flask import Flask, jsonify, request
 import firebase_admin
 from firebase_admin import credentials, firestore
 from flask_cors import CORS
+import requests
 
 app = Flask(__name__)
 CORS(app)
 
 # Conexión con Firestore
-cred = credentials.Certificate("../ferremas-cb091-firebase-adminsdk-fbsvc-5e422400a8.json")
+cred = credentials.Certificate("../ferremas-cb091-firebase-adminsdk-fbsvc-2b7a7a33a6.json")
 firebase_admin.initialize_app(cred)
 db = firestore.client()
 
@@ -16,10 +17,16 @@ db = firestore.client()
 # GET /productos – Lista de todos los productos
 @app.route('/productos', methods=['GET'])
 def get_productos():
-    productos_ref = db.collection('productos')
-    docs = productos_ref.stream()
-    productos = [{**doc.to_dict(), "id": doc.id} for doc in docs]
-    return jsonify(productos), 200
+    try:
+        print("Accediendo a Firestore...")
+        productos_ref = db.collection('productos')
+        docs = productos_ref.stream()
+        productos = [{**doc.to_dict(), "id": doc.id} for doc in docs]
+        print("Productos obtenidos correctamente")
+        return jsonify(productos), 200
+    except Exception as e:
+        print(f"Error en /productos: {e}")
+        return jsonify({'error': 'Error al obtener productos'}), 500
 
 # GET /productos/<codigo> – Detalle de un producto por código
 @app.route('/productos/<codigo>', methods=['GET'])
@@ -64,6 +71,48 @@ def post_contacto():
         return jsonify({'error': 'Datos inválidos'}), 400
     contacto_ref = db.collection('contacto').add(data)
     return jsonify({'message': 'Mensaje recibido', 'id': contacto_ref[1].id}), 201
+
+
+#Convertir moneda
+#/moneda/convertir?monto=10000&desde=CLP&hacia=USD (path del pointend)
+@app.route('/moneda/convertir', methods=['GET'])
+def convertir_moneda():
+    # Obtener parámetros de consulta
+    monto = request.args.get('monto', type=float)
+    desde = request.args.get('desde', default='CLP').upper()
+    hacia = request.args.get('hacia', default='USD').upper()
+
+    if not monto or desde not in ['CLP', 'USD'] or hacia not in ['CLP', 'USD']:
+        return jsonify({'error': 'Parámetros inválidos. Uso: ?monto=1000&desde=CLP&hacia=USD'}), 400
+
+    try:
+        # Llamada a la API de mindicador.cl
+        response = requests.get("https://mindicador.cl/api")
+        response.raise_for_status()
+        data = response.json()
+
+        valor_dolar = data['dolar']['valor']
+
+        if desde == 'CLP' and hacia == 'USD':
+            resultado = monto / valor_dolar
+        elif desde == 'USD' and hacia == 'CLP':
+            resultado = monto * valor_dolar
+        else:
+            resultado = monto  # mismo tipo de moneda
+
+        return jsonify({
+            'monto_original': monto,
+            'desde': desde,
+            'hacia': hacia,
+            'resultado': round(resultado, 2),
+            'valor_dolar': valor_dolar,
+            'fecha': data['dolar']['fecha']
+        })
+
+    except requests.RequestException:
+        return jsonify({'error': 'No se pudo obtener la información del valor del dólar'}), 500
+
+
 
 # Ruta raíz
 @app.route('/')
