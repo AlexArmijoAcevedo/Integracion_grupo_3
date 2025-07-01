@@ -39,4 +39,18 @@ def obtener_dolar(request):
         return JsonResponse({"xml": response.text})
     else:
         return JsonResponse({"error": "No se pudo obtener el valor del dólar"})
+    
+def pago(request):
+    return render(request, 'pago.html')
 
+@csrf_exempt  # para pruebas, evita error CSRF
+def simular_webpay(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        # Aquí puedes validar o simular lógica
+        numero = data.get("numero", "")
+        # Ejemplo simple: si número termina en '0', rechaza
+        if numero.endswith("0"):
+            return JsonResponse({"status": "rechazado"})
+        return JsonResponse({"status": "aceptado"})
+    return JsonResponse({"error": "Método no permitido"}, status=405)

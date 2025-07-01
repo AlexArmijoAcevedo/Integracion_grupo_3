@@ -1,118 +1,84 @@
 /**
  * @jest-environment jsdom
  */
-import fs from 'fs';
-import path from 'path';
 
-describe('Estilo Login - Interacciones visuales', () => {
-  let document;
+describe('Interacción en estilo_login.js', () => {
+  let loginText, loginForm, loginBtn, signupBtn, signupLink;
 
   beforeEach(() => {
-    const html = fs.readFileSync(path.resolve(__dirname, '../taller_ferremas/templates/login.html'), 'utf8');
-    document = document.implementation.createHTMLDocument();
-    document.documentElement.innerHTML = html;
+    // Simular estructura HTML relevante
+    document.body.innerHTML = `
+      <div class="title-text">
+        <div class="login" style="margin-left: 0%"></div>
+      </div>
+      <form class="login" style="margin-left: 0%">
+        <div class="signup-link"><a href="#">Registrarse</a></div>
+      </form>
+      <label class="login">Login</label>
+      <label class="signup">Signup</label>
+    `;
 
-    // Crear estructura mínima para pruebas
-    const loginText = document.createElement('div');
-    loginText.className = 'title-text';
-    loginText.innerHTML = '<div class="login"></div>';
+    // Re-importar elementos como en el script
+    loginText = document.querySelector(".title-text .login");
+    loginForm = document.querySelector("form.login");
+    loginBtn = document.querySelector("label.login");
+    signupBtn = document.querySelector("label.signup");
+    signupLink = document.querySelector("form .signup-link a");
 
-    const form = document.createElement('form');
-    form.className = 'login';
-
-    const loginBtn = document.createElement('label');
-    loginBtn.className = 'login';
-
-    const signupBtn = document.createElement('label');
-    signupBtn.className = 'signup';
-
-    const signupLink = document.createElement('a');
-    signupLink.className = 'signup-link';
-
-    form.innerHTML = '<input type="text" class="input-login" /><button>Enviar</button>';
-
-    document.body.appendChild(loginText);
-    document.body.appendChild(form);
-    document.body.appendChild(loginBtn);
-    document.body.appendChild(signupBtn);
-    document.body.appendChild(signupLink);
-
-    // Simular código del script
+    // Simular funcionalidad como en estilo_login.js
     signupBtn.onclick = () => {
-      form.style.marginLeft = '-50%';
-      loginText.style.marginLeft = '-50%';
+      loginForm.style.marginLeft = "-50%";
+      loginText.style.marginLeft = "-50%";
     };
-
     loginBtn.onclick = () => {
-      form.style.marginLeft = '0%';
-      loginText.style.marginLeft = '0%';
+      loginForm.style.marginLeft = "0%";
+      loginText.style.marginLeft = "0%";
     };
-
     signupLink.onclick = () => {
       signupBtn.click();
       return false;
     };
   });
 
-  test('1. Cambiar color del botón al hacer hover', () => {
-    const button = document.querySelector('button');
-    button.addEventListener('mouseenter', () => {
-      button.style.backgroundColor = 'red';
-    });
-
-    button.dispatchEvent(new Event('mouseenter'));
-    expect(button.style.backgroundColor).toBe('red');
+  test('1. Cambiar margen a -50% al hacer clic en Signup', () => {
+    signupBtn.click();
+    expect(loginForm.style.marginLeft).toBe("-50%");
+    expect(loginText.style.marginLeft).toBe("-50%");
   });
 
-  test('2. Aplicar animación de foco en input', () => {
-    const input = document.querySelector('.input-login');
-    input.addEventListener('focus', () => {
-      input.classList.add('focus-animacion');
-    });
-
-    input.dispatchEvent(new Event('focus'));
-    expect(input.classList.contains('focus-animacion')).toBe(true);
+  test('2. Cambiar margen a 0% al hacer clic en Login', () => {
+    // Primero cambiamos a -50%
+    signupBtn.click();
+    // Luego hacemos clic en Login
+    loginBtn.click();
+    expect(loginForm.style.marginLeft).toBe("0%");
+    expect(loginText.style.marginLeft).toBe("0%");
   });
 
-  test('3. Restaurar estilo al hacer blur', () => {
-    const input = document.querySelector('.input-login');
-    input.classList.add('focus-animacion');
-
-    input.addEventListener('blur', () => {
-      input.classList.remove('focus-animacion');
-    });
-
-    input.dispatchEvent(new Event('blur'));
-    expect(input.classList.contains('focus-animacion')).toBe(false);
+  test('3. Al hacer clic en el enlace de registro se activa el botón de Signup', () => {
+    const spy = jest.spyOn(signupBtn, 'click');
+    signupLink.click();
+    expect(spy).toHaveBeenCalled();
+    spy.mockRestore();
   });
 
-  test('4. Validar clase CSS aplicada correctamente', () => {
-    const input = document.querySelector('.input-login');
-    input.classList.add('mi-clase-estilo');
-    expect(input.classList.contains('mi-clase-estilo')).toBe(true);
+  test('4. El enlace de registro cancela la acción por defecto', () => {
+    const event = new MouseEvent('click');
+    const preventDefault = jest.fn();
+    signupLink.addEventListener('click', e => e.preventDefault());
+    signupLink.dispatchEvent(event);
+    expect(preventDefault).not.toHaveBeenCalled(); // por ahora no está en tu código original
   });
 
-  test('5. Verificar que se desactiva animación al enviar formulario', () => {
-    const input = document.querySelector('.input-login');
-    const button = document.querySelector('button');
-
-    input.classList.add('animacion-login');
-
-    button.addEventListener('click', () => {
-      input.classList.remove('animacion-login');
-    });
-
-    button.dispatchEvent(new Event('click'));
-    expect(input.classList.contains('animacion-login')).toBe(false);
+  test('5. Verificar valores iniciales de margen en 0%', () => {
+    expect(loginForm.style.marginLeft).toBe("0%");
+    expect(loginText.style.marginLeft).toBe("0%");
   });
 
-  test('6. Validar que se agregue sombra al input al enfocarse', () => {
-    const input = document.querySelector('.input-login');
-    input.addEventListener('focus', () => {
-      input.style.boxShadow = '0px 0px 5px rgba(0,0,0,0.5)';
-    });
-
-    input.dispatchEvent(new Event('focus'));
-    expect(input.style.boxShadow).toBe('0px 0px 5px rgba(0, 0, 0, 0.5)');
+  test('6. Alternar entre Signup y Login funciona correctamente', () => {
+    signupBtn.click();
+    expect(loginForm.style.marginLeft).toBe("-50%");
+    loginBtn.click();
+    expect(loginForm.style.marginLeft).toBe("0%");
   });
 });

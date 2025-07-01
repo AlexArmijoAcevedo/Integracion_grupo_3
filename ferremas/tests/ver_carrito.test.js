@@ -50,31 +50,47 @@ describe('Pruebas de carrito', () => {
     expect(document.getElementById('total').textContent).toContain('$3000');
   });
 
-  test('3 y 4. Modificar cantidad y actualizar total', () => {
-    const carritoMock = [
-      { id: '1', nombre: 'Martillo', precio: 1000 },
-      { id: '1', nombre: 'Martillo', precio: 1000 }
-    ];
-    localStorage.setItem('carrito', JSON.stringify(carritoMock));
+test('3. Permitir modificar cantidad de productos', () => {
+  const carritoMock = [
+    { id: '1', nombre: 'Martillo', precio: 1000 },
+    { id: '1', nombre: 'Martillo', precio: 1000 }
+  ];
+  localStorage.setItem('carrito', JSON.stringify(carritoMock));
 
-    mostrarCarrito();
+  mostrarCarrito();
 
-    // Aumentar cantidad
-    const btnAumentar = document.querySelector('.btn-aumentar[data-id="1"]');
-    btnAumentar.click();
+  const btnAumentar = document.querySelector('.btn-aumentar[data-id="1"]');
+  btnAumentar.click();
 
-    expect(document.getElementById('cantidad-1').textContent).toBe('3');
-    expect(document.getElementById('subtotal-1').textContent).toBe('$3000');
-    expect(document.getElementById('total').textContent).toContain('$3000');
+  expect(document.getElementById('cantidad-1').textContent).toBe('3');
 
-    // Disminuir cantidad
-    const btnDisminuir = document.querySelector('.btn-disminuir[data-id="1"]');
-    btnDisminuir.click();
+  const btnDisminuir = document.querySelector('.btn-disminuir[data-id="1"]');
+  btnDisminuir.click();
 
-    expect(document.getElementById('cantidad-1').textContent).toBe('2');
-    expect(document.getElementById('subtotal-1').textContent).toBe('$2000');
-    expect(document.getElementById('total').textContent).toContain('$2000');
-  });
+  expect(document.getElementById('cantidad-1').textContent).toBe('2');
+});
+
+test('4. Actualizar total al cambiar cantidades', () => {
+  const carritoMock = [
+    { id: '1', nombre: 'Martillo', precio: 1000 },
+    { id: '1', nombre: 'Martillo', precio: 1000 }
+  ];
+  localStorage.setItem('carrito', JSON.stringify(carritoMock));
+
+  mostrarCarrito();
+
+  const btnAumentar = document.querySelector('.btn-aumentar[data-id="1"]');
+  btnAumentar.click();
+
+  expect(document.getElementById('subtotal-1').textContent).toBe('$3000');
+  expect(document.getElementById('total').textContent).toBe('$3000');
+
+  const btnDisminuir = document.querySelector('.btn-disminuir[data-id="1"]');
+  btnDisminuir.click();
+
+  expect(document.getElementById('subtotal-1').textContent).toBe('$2000');
+  expect(document.getElementById('total').textContent).toBe('$2000');
+});
 
   test('5. Eliminar productos del carrito', () => {
     const carritoMock = [
