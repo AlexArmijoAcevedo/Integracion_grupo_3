@@ -1,20 +1,10 @@
 // ver_carrito.js
-document.addEventListener("DOMContentLoaded", () => {
-  mostrarCarrito();
-
-  document.getElementById("btn-enviar").addEventListener("click", () => {
-    alert("Funcionalidad de envío pendiente...");
-  });
-});
 
 function mostrarCarrito() {
   const carritoContainer = document.getElementById("carrito-container");
   const totalSpan = document.getElementById("total");
   
-
   let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
-
-  console.log("Carrito cargado:", carrito);
 
   // Agrupar productos por ID
   const productosAgrupados = {};
@@ -61,7 +51,7 @@ function mostrarCarrito() {
     btn.addEventListener("click", () => {
       const id = btn.dataset.id;
       if (!id || typeof id !== "string") {
-        console.error("ID inválido al aumentar:", id);
+        console.error("ID inválido al disminuir:", id);
         return;
       }
       actualizarCantidad(id, -1);
@@ -122,3 +112,15 @@ function eliminarProducto(id) {
   localStorage.setItem("carrito", JSON.stringify(carrito));
   mostrarCarrito();
 }
+
+if (typeof window !== 'undefined') {
+  document.addEventListener("DOMContentLoaded", () => {
+    mostrarCarrito();
+
+    document.getElementById("btn-enviar").addEventListener("click", () => {
+      alert("Funcionalidad de envío pendiente...");
+    });
+  });
+}
+
+module.exports = { mostrarCarrito, actualizarCantidad, eliminarProducto };

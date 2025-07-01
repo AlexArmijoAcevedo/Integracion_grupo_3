@@ -101,6 +101,7 @@
               .then((userCredential) => {
                 alert("Usuario registrado correctamente");
                 console.log(userCredential.user);
+                document.getElementById("login").checked = true;
               })
               .catch((error) => {
                 alert("Error: " + error.message);
