@@ -3,6 +3,11 @@ services:
     name: ferremas
     env: python
     plan: free
+<<<<<<< HEAD
+=======
+    buildCommand: pip install -r ../requirements.txt
+    startCommand: gunicorn ferremas.wsgi:application
+>>>>>>> parent of a0d5d17 (yipeee)
     rootDir: ferremas
     buildCommand: pip install -r requirements.txt
     startCommand: gunicorn ferremas.wsgi:application
