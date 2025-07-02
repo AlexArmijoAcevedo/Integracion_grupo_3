@@ -10,7 +10,7 @@ jobs:
 
     defaults:
       run:
-        working-directory: ferremas
+        working-directory: taller_ferremas
 
     steps:
       - uses: actions/checkout@v3
