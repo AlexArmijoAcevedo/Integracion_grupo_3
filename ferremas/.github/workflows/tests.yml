@@ -1,4 +1,4 @@
-name: Run Django Tests
+name: Ejecucion de pruebas Django
 
 on:
   push:
