@@ -7,6 +7,9 @@ services:
 =======
     buildCommand: pip install -r ../requirements.txt
     startCommand: gunicorn ferremas.wsgi:application
+<<<<<<< HEAD
+>>>>>>> parent of a0d5d17 (yipeee)
+=======
 >>>>>>> parent of a0d5d17 (yipeee)
     rootDir: ferremas
     buildCommand: pip install -r requirements.txt
