@@ -2,11 +2,9 @@ name: Ejecucion de pruebas Django
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
   pull_request:
-    branches:
-      - main
+    branches: [main]
 
 jobs:
   test:
@@ -29,7 +27,7 @@ jobs:
 
     env:
       DATABASE_URL: postgres://postgres:postgres@localhost:5432/testdb
-      DJANGO_SETTINGS_MODULE: taller_ferremas.settings
+      DJANGO_SETTINGS_MODULE: ferremas.settings
 
     steps:
       - uses: actions/checkout@v3
@@ -42,15 +40,10 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r ../requirements.txt
-        working-directory: ferremas
+          pip install -r requirements.txt
 
       - name: Run migrations
-        run: |
-          python manage.py migrate
-        working-directory: ferremas
+        run: python manage.py migrate
 
       - name: Run tests with pytest
-        run: |
-          pytest
-        working-directory: ferremas
+        run: pytest
