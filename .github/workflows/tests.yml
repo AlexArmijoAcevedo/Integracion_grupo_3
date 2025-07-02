@@ -47,5 +47,5 @@ jobs:
         working-directory: ferremas
 
       - name: Run tests with pytest
-        run: pytest
+        run: pytest -v tests/test_integracion.py
         working-directory: ferremas
