@@ -3,23 +3,6 @@ services:
     name: ferremas
     env: python
     plan: free
-<<<<<<< HEAD
-=======
     buildCommand: pip install -r ../requirements.txt
-    startCommand: gunicorn ferremas.wsgi:application
-<<<<<<< HEAD
->>>>>>> parent of a0d5d17 (yipeee)
-=======
->>>>>>> parent of a0d5d17 (yipeee)
+    startCommand: gunicorn taller_ferremas.wsgi
     rootDir: ferremas
-    buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn ferremas.wsgi:application
-    envVars:
-      - key: DJANGO_SETTINGS_MODULE
-        value: ferremas.settings
-      - key: DJANGO_SECRET_KEY
-        value: django-insecure-4z7$@p1p4!k4mvxj0e#8g&$9sbd%rx*9+ovwtyt6k3)
-      - key: DJANGO_DEBUG
-        value: False
-      - key: DJANGO_ALLOWED_HOSTS
-        value: ferremas-poff.onrender.com
