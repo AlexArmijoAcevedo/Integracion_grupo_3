@@ -2,10 +2,12 @@ services:
   - type: web
     name: ferremas
     env: python
-    buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn ferremas.wsgi:application
+    buildCommand: |
+      cd ferremas
+      pip install -r requirements.txt
+    startCommand: gunicorn taller_ferremas.wsgi:application
     envVars:
       - key: DJANGO_SETTINGS_MODULE
-        value: ferremas.settings
+        value: taller_ferremas.settings
       - key: DATABASE_URL
         value: sqlite:///db.sqlite3
