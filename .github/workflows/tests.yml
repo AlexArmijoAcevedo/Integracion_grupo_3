@@ -3,8 +3,6 @@ name: Ejecucion de pruebas Django
 on:
   push:
     branches: [ main ]
-  pull_request:
-    branches: [ main ]
 
 jobs:
   test:
@@ -12,21 +10,25 @@ jobs:
 
     defaults:
       run:
-        working-directory: ferremas  # Aquí ejecutamos comandos dentro de ferremas
+        working-directory: ferremas
 
     steps:
       - uses: actions/checkout@v3
 
-      - name: Set up Python 3.11
+      - name: Setup Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.11'
 
       - name: Install dependencies
-        run: pip install -r ../requirements.txt  # Le decimos que el requirements está fuera, en la raíz
+        run: pip install -r ../requirements.txt
 
       - name: Run migrations
+        env:
+          DJANGO_SETTINGS_MODULE: taller_ferremas.settings
         run: python manage.py migrate
 
       - name: Run tests
+        env:
+          DJANGO_SETTINGS_MODULE: taller_ferremas.settings
         run: python manage.py test
