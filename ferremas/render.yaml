@@ -5,7 +5,9 @@ services:
     buildCommand: |
       cd ferremas
       pip install -r requirements.txt
-    startCommand: gunicorn taller_ferremas.wsgi:application
+    startCommand: |
+      cd ferremas
+      gunicorn taller_ferremas.wsgi:application
     envVars:
       - key: DJANGO_SETTINGS_MODULE
         value: taller_ferremas.settings
