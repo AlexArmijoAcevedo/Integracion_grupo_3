@@ -27,7 +27,7 @@ jobs:
 
     env:
       DATABASE_URL: postgres://postgres:postgres@localhost:5432/testdb
-      DJANGO_SETTINGS_MODULE: ferremas.settings  # settings.py está en ferremas/
+      DJANGO_SETTINGS_MODULE: ferremas.settings
 
     steps:
       - uses: actions/checkout@v3
@@ -43,7 +43,9 @@ jobs:
           pip install -r requirements.txt
 
       - name: Run migrations
-        run: python ferremas/manage.py migrate
+        run: python manage.py migrate
+        working-directory: ferremas
 
       - name: Run tests with pytest
         run: pytest
+        working-directory: ferremas
