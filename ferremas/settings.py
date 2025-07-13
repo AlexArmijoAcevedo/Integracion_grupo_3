@@ -13,7 +13,7 @@ SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'django-insecure-123456789')
 DEBUG = os.getenv('DJANGO_DEBUG', 'False').lower() == 'true'
 
 # ALLOWED_HOSTS desde variable o por defecto localhost
-ALLOWED_HOSTS = os.getenv('DJANGO_ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
+ALLOWED_HOSTS = ['integracion-grupo-3.onrender.com', 'localhost', '127.0.0.1']
 
 # Aplicaciones instaladas
 INSTALLED_APPS = [
