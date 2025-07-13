@@ -23,7 +23,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'taller_ferremas',
+    'ferremas.taller_ferremas',
 ]
 
 # Middleware
