@@ -1,8 +1,20 @@
 services:
   - type: web
-    name: ferremas
+    name: ferremas-app
     env: python
-    plan: free
-    buildCommand: pip install -r ../requirements.txt
-    startCommand: gunicorn taller_ferremas.wsgi
-    rootDir: ferremas
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "gunicorn ferremas.wsgi:application"
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: ferremas-db
+          property: connectionString
+      - key: DJANGO_SECRET_KEY
+        generateValue: true
+      - key: DJANGO_ALLOWED_HOSTS
+        value: ferremas-app.onrender.com
+      - key: DJANGO_DEBUG
+        value: False
+
+databases:
+  - name: ferremas-db
