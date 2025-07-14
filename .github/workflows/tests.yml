@@ -6,7 +6,7 @@ on:
   pull_request:
     branches: [main]
   schedule:
-    - cron: '0 12 * * *'  # Todos los días a las 9:00 AM Chile en verano (UTC-3)
+    - cron: '0 12 * * *'  # 09:00 AM Chile en verano (UTC-3)
   workflow_dispatch:
 
 jobs:
@@ -46,9 +46,7 @@ jobs:
           pip install -r requirements.txt
 
       - name: Run migrations
-        run: python manage.py migrate
-        working-directory: ferremas
+        run: python ferremas/manage.py migrate
 
       - name: Run tests with pytest
-        run: pytest -v tests/test_integracion.py
-        working-directory: ferremas
+        run: pytest -v ferremas/tests/test_integracion.py
