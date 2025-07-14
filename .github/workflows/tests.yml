@@ -5,6 +5,9 @@ on:
     branches: [main]
   pull_request:
     branches: [main]
+  schedule:
+    - cron: '0 12 * * *'  # Todos los días a las 9:00 AM Chile en verano (UTC-3)
+  workflow_dispatch:
 
 jobs:
   test:
