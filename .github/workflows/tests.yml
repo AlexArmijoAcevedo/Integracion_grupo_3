@@ -51,7 +51,3 @@ jobs:
 
       - name: Ejecutar tests con pytest
         run: pytest -v ferremas/tests/test_integracion.py
-
-
-      - name: Run tests with pytest
-        run: pytest -v tests/test_integracion.py
